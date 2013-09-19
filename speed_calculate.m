@@ -4,7 +4,7 @@ clear;
 
 %data=load('C:\matlab³ÌÐò\fall detection2/continuous_monitor-sasaki.txt');
 %data=load('C:\matlab³ÌÐò\fall detection2\4.txt');
-data=load('data\continuous_monitor-sasaki.txt');
+data=load('data\foward_fall2.txt');
 H=20;
 %%% X and Y are the coordiates of 20 sensors
 X=[37.5 112.5 187.5 262.5 337.5 37.5 112.5 187.5 262.5 337.5 37.5 112.5 187.5 262.5 337.5 37.5 112.5 187.5 262.5 337.5];
