@@ -1,7 +1,7 @@
 % function [X,Y]=createPaths
 
 clf;
-xlim([0 7000]);
+xlim([0 8000]);
 ylim([0 14000]);
 hold on;
 im=imread('D:\prml\irtracking\data\img\frame_00001.jpg');
@@ -22,7 +22,7 @@ while button~=3
     id=id+1;
     % tracks
 %     while button~=3
-    randnum=randi(6)+3
+    randnum=randi(20)+10
         [x, y, button]=ginput(randnum);
 %     end
     nPts=length(x);
@@ -87,8 +87,14 @@ for t=1:F
     end
 end
 size(readings)
-data_output_file='d:/prml/irtracking/data/antonsynth.txt';
-dlmwrite(data_output_file,readings,' ');
+seq_data_file='s1-easy';
+data_output_file=sprintf('d:/prml/irtracking/data/%s.txt',seq_data_file);
+
+% date
+fid=fopen(data_output_file,'w');
+fprintf(fid,'%d-%d-%d %0d:%0d:%0d',round(dv));
+fclose(fid);
+dlmwrite(data_output_file,readings,'-append','delimiter',' ');
 fprintf('synthetic data saved to %s\n',data_output_file);
 
 %%
@@ -97,7 +103,7 @@ fprintf('synthetic data saved to %s\n',data_output_file);
 [X, Y]=sensorLocEst(readings);
 detMat=detsToDetmats(X,Y,25);
 detState=detmatToState(detMat);
-saveToCVML(X,Y,'d:/prml/irtracking/data/testanton.xml',0,25);
-saveToCVML(Xipol,Yipol, 'd:/prml/irtracking/data/testanton_gt.xml',1,25);
-delete d:/prml/irtracking/data/testanton.mat
-delete d:/prml/irtracking/data/testanton_gt.mat
+saveToCVML(X,Y,sprintf('d:/prml/irtracking/data/%s.xml',seq_data_file),0,25);
+saveToCVML(Xipol,Yipol, sprintf('d:/prml/irtracking/data/%s_gt.xml',seq_data_file),1,25);
+delete(sprintf('d:/prml/irtracking/data/%s.mat',seq_data_file));
+delete(sprintf('d:/prml/irtracking/data/%s_gt.mat',seq_data_file));

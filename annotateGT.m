@@ -1,7 +1,7 @@
 %% annotateGT
-id=8;
+id=6;
 
-for t=[150:5:F F]
+for t=[40:3:F F]
 
 [X, Y]=viewLocationsAndCams(readings,ts,t);
 

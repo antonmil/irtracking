@@ -1,4 +1,4 @@
-function [x, y]=viewLocationsAndCams(indata, ts, fr)
+function [x, y]=viewLocationsAndCams(indata, ts, fr, gtInfo)
 
 % parse in parameter
 readings=parseData(indata);
@@ -12,7 +12,7 @@ readings=parseData(indata);
 
 % get coordinates
 [xc, yc]=getSensorCoordinates;
-sceneInfo=getSceneInfo(301);
+% sceneInfo=getSceneInfo(301);
 
 % if time known, try to sync
 imgdir1='data/webcams/c1/';
@@ -43,9 +43,12 @@ else
     figure(h);
 end
 
+% if nargin>=4
+%     Xgt=gt.Xgt; Ygt=gt.Ygt;
+% end
 
 showframes=1:F;
-if nargin==3
+if nargin>=3
     showframes=fr;
 end
 for t=showframes
@@ -57,10 +60,9 @@ for t=showframes
         hold on;
     end
     
-    im=imread([sceneInfo.imgFolder sprintf(sceneInfo.imgFileFormat,sceneInfo.frameNums(1))]);
-    xIm=sceneInfo.trackingArea([1 2]); xIm=repmat(xIm,2,1);
-    yind=[4 3];
-    yIm=sceneInfo.trackingArea(yind); yIm=repmat(yIm,2,1);yIm=yIm';
+    im=imread(sprintf('d:/prml/irtracking/data/img/frame_%05d.jpg',t));
+    xIm=[0 8000]; xIm=repmat(xIm,2,1);
+    yIm=[14000 0]; yIm=repmat(yIm,2,1);yIm=yIm';
     zIm=zeros(2,2);
     surf(xIm,yIm,zIm,'CData',im,'FaceColor','texturemap');
     
@@ -72,6 +74,39 @@ for t=showframes
     plot(xc(active),yc(active),'ro','MarkerSize',30);
     plot(x(t,:),y(t,:),'+');
     xlim([0 8000]); ylim([0 14000]);
+    
+    if nargin>=4
+        options.traceLength=5;
+        options.traceWidth=2;
+        extar=find(gtInfo.Xgp(t,:));
+        for id=extar
+            plot(gtInfo.Xgp(t,id),gtInfo.Ygp(t,id),'o','color',getColorFromID(id));
+        end
+        for tracet=max(1,t-options.traceLength):max(1,t-1)
+            ipolpar=(t-tracet)/options.traceLength; % parameter [0,1] for color adjustment
+                        
+            extarpast=find(gtInfo.Xgp(tracet,:));
+            % foot position
+            for id=extarpast
+                
+                if gtInfo.Xgp(tracet+1,id)
+%                     posx=round(max(1,X(t,id))); 
+%                     posy=round(max(1,Y(t,id))); 
+                    
+                    trCol=getColorFromID(id);
+                    endcol=trCol;
+                    
+                    line(gtInfo.Xgp(tracet:tracet+1,id) ,gtInfo.Ygp(tracet:tracet+1,id), ...                        
+                        'color',ipolpar*endcol + (1-ipolpar)*trCol,'linewidth',(1-ipolpar)*options.traceWidth+1);                
+%                     'color',ipolpar*endcol + (1-ipolpar)*getColorFromID(id),'linewidth',2, 'LineSmoothing',LineSmoothing);
+
+                end
+                
+            end
+            
+        end
+    end
+
     
     titlestr=sprintf('fr. %d',t);
     if nargin>1
@@ -122,6 +157,14 @@ for t=showframes
 %         title(titlestr);
 %         pause(.1)
     end
+    
+%     imcpt=getframe(gcf);
+%     imcpt=imcpt.cdata;
+    
+    fname=sprintf('data/vis/gt/s%04d/frame_%04d.jpg',gtInfo.scenario,t);
+%     imwrite(imcpt,fname);
+    saveas(gcf,fname);
+    
     pause(.1);
     
 end
