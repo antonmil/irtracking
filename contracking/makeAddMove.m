@@ -57,7 +57,7 @@ for j=1:MAXNEW
         extar=find(X(t,:));
         for d=exdet
             for i=extar
-                if norm([X(t,i) Y(t,i)]-[Xd(t,d) Yd(t,d)])<gridStep*2
+                if norm([X(t,i) Y(t,i)]-[Xd(t,d) Yd(t,d)])<gridStep*4
 %                     exdet=setdiff(exdet,d);
                     potdet(d)=0;
                 end

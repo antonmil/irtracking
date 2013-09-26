@@ -442,7 +442,7 @@ switch(scenario)
 end
 
 % TEMP PRML
-if scenario==301 || scenario==399
+if scenario>=301 && scenario<=399
     [pathstr, filename, ~]=fileparts(sceneInfo.detfile);
 %     addpath('d:\prml\irtracking');
 %     tmpdet=readData([pathstr filesep filename '.txt']);
@@ -660,7 +660,7 @@ if scenario==97, sceneInfo.targetSize=20; end
 if scenario>190 && scenario<199, sceneInfo.targetSize=20; end
 if scenario>300 && scenario<310, sceneInfo.targetSize=50; end
 if opt.track3d, sceneInfo.targetSize=350; end
-if opt.track3d && ~isempty(intersect(scenario,301:399)), sceneInfo.targetSize=1500; end
+if opt.track3d && ~isempty(intersect(scenario,301:399)), sceneInfo.targetSize=1400; end
 
 %% target aspect ratio
 sceneInfo.targetAR=1/3;
@@ -716,7 +716,7 @@ switch(scenario)
 %         sceneInfo.gtFile=fullfile(dbfolder,dataset,seqname,'GT_PNNL_ParkingLot_1-750.mat');
 %         sceneInfo.gtFile=fullfile(dbfolder,dataset,seqname,'GT_PNNL_ParkingLot.mat');
     case 301
-        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','s1-easy_gt.mat');        
+        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','s1-easy_gt.xml');        
     case 302
         sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','s1-medium_gt.xml');
     case 303

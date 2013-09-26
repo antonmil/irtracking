@@ -1,11 +1,12 @@
 % function [X,Y]=createPaths
 
+reopenFig('createPaths');
 clf;
-xlim([0 8000]);
+xlim([0 8625]);
 ylim([0 14000]);
 hold on;
 im=imread('D:\prml\irtracking\data\img\frame_00001.jpg');
-    xIm=[1 8000]; xIm=repmat(xIm,2,1);
+    xIm=[1 8625]; xIm=repmat(xIm,2,1);
     yIm=[14000 1]; yIm=repmat(yIm,2,1);yIm=yIm';
     zIm=zeros(2,2);
     
@@ -22,7 +23,7 @@ while button~=3
     id=id+1;
     % tracks
 %     while button~=3
-    randnum=randi(20)+10
+    randnum=randi(15)+5
         [x, y, button]=ginput(randnum);
 %     end
     nPts=length(x);
@@ -53,7 +54,7 @@ frameRate=2;
 Xipol=[]; Yipol=[];
 for id=1:N
     exfr=find(X(:,id)); % find existing frames
-    speed=500+randn*100;
+    speed=500+randn*50;
     tSteps=ceil(frameRate*(lengths(id)/speed)); % how many time steps
     tr=1:tSteps;
     % snap to start or end of sequence
@@ -87,12 +88,14 @@ for t=1:F
     end
 end
 size(readings)
-seq_data_file='s1-easy';
+
+seq_data_file='s1-hard';
 data_output_file=sprintf('d:/prml/irtracking/data/%s.txt',seq_data_file);
 
 % date
+dv=datevec(now);
 fid=fopen(data_output_file,'w');
-fprintf(fid,'%d-%d-%d %0d:%0d:%0d',round(dv));
+fprintf(fid,'%d-%d-%d %0d:%0d:%0d\n',round(dv));
 fclose(fid);
 dlmwrite(data_output_file,readings,'-append','delimiter',' ');
 fprintf('synthetic data saved to %s\n',data_output_file);
@@ -104,6 +107,18 @@ fprintf('synthetic data saved to %s\n',data_output_file);
 detMat=detsToDetmats(X,Y,25);
 detState=detmatToState(detMat);
 saveToCVML(X,Y,sprintf('d:/prml/irtracking/data/%s.xml',seq_data_file),0,25);
-saveToCVML(Xipol,Yipol, sprintf('d:/prml/irtracking/data/%s_gt.xml',seq_data_file),1,25);
+
+gtFile=sprintf('d:/prml/irtracking/data/%s_gt.xml',seq_data_file);
+saveToCVML(Xipol,Yipol, gtFile,1,25);
+
+sceneInfo=getSceneInfo(303);
+
+[pathtogt, gtfile, fileext]=fileparts(gtFile);
+gtInfo=parseGT(sceneInfo.gtFile);
+
+[gtInfo.Xgp, gtInfo.Ygp]=projectToGroundPlane(gtInfo.X, gtInfo.Y, sceneInfo);
+gtInfo.Xi=gtInfo.X; gtInfo.Yi=gtInfo.Y;
+save(fullfile(pathtogt,[gtfile '.mat']),'gtInfo');
+        
 delete(sprintf('d:/prml/irtracking/data/%s.mat',seq_data_file));
-delete(sprintf('d:/prml/irtracking/data/%s_gt.mat',seq_data_file));
+% delete(sprintf('d:/prml/irtracking/data/%s_gt.mat',seq_data_file));

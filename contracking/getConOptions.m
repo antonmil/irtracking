@@ -14,7 +14,7 @@ opt.track3d=howToTrack(scenario);
 
 % general
 % opt.track3d=1;                  % set to 1 for track estimation on ground plane
-opt.verbosity=3;                % 0=silent, 1=short info, 2=long info, 3=all
+opt.verbosity=1;                % 0=silent, 1=short info, 2=long info, 3=all
 opt.mex=1;                      % use mex
 opt.visOptim=0;                 % visualize optimization
 opt.occ=0;                      % compute occlusions [Andriyenko et al. ICCV VS Workshop 2011]
@@ -67,7 +67,7 @@ opt.frames=1:750;
 %  opt.detScale.sigA=-1; % shift TUD
 % opt.detScale.sigB=1; % peakiness TUD
 
-opt.visOptim=1;
+opt.visOptim=0;
 opt.startsol=6;
 
 % PNNL
@@ -115,13 +115,13 @@ if opt.track3d
 %     opt.jumpsOrder=[6 1 3 4 2 5];   % standard: merge grow shrink split add remove
 
     % PRML
-    opt.wtEdet=3;               % should be kept at 1
-    opt.wtEdyn=.005;
-    opt.wtEexc=4;
-    opt.wtEper=2;
+    opt.wtEdet=5;               % should be kept at 1
+    opt.wtEdyn=.01;
+    opt.wtEexc=2;
+    opt.wtEper=4;
     opt.wtEreg=2;
-    opt.lambda=0.4;
-    opt.frames=100:120;
+    opt.lambda=0.25;
+%     opt.frames=100:150;
 end
 
 if isdeployed

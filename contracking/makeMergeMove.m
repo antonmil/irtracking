@@ -13,8 +13,9 @@ function [stateInfo allmergeenergy]=makeMergeMove(stateInfo)
 % tic;
 
 % how do we interpolate?
-% interpmeth='spline';
-interpmeth='linear';
+interpmeth='spline';
+interpmeth='pchip';
+% interpmeth='linear';
 
 global sceneInfo;
 
@@ -54,7 +55,7 @@ while itcnt<1000 && N
                 framesbetween=tsta-tend;
                 distance=norm([X(tend,id) Y(tend,id)]-[X(tsta,id2) Y(tsta,id2)]);
                 speed=distance/framesbetween;
-                if speed<3*gridStep && distance<5*gridStep && framesbetween<15 % avoid unplausible connections
+                if speed<1*gridStep && distance<1*gridStep && framesbetween<5 % avoid unplausible connections
 %                     fprintf('%id and %id can be connected, distance: %f, speed p/f: %f\n',id,id2,distance,speed);
                     potentialConnections(id,id2)=1;
                 end
@@ -90,11 +91,11 @@ while itcnt<1000 && N
                 % try to smooth
                 sw=[0.2 0.3 0.3 0.2]; % smoothing weights
 %                 sw=[0 1 0 0]; % smoothing weights
-                Xt(toframe1+1,id)=sw(1)*Xt(toframe1-1,id)+sw(2)*Xt(toframe1,id)+sw(3)*Xt(toframe1+2,id)+sw(4)*Xt(toframe1+3,id);
-                Yt(toframe1+1,id)=sw(1)*Yt(toframe1-1,id)+sw(2)*Yt(toframe1,id)+sw(3)*Yt(toframe1+2,id)+sw(4)*Yt(toframe1+3,id);
-                Xt(fromframe2-1,id)=sw(1)*Xt(fromframe2-3,id)+sw(2)*Xt(fromframe2-2,id)+sw(3)*Xt(fromframe2,id)+sw(4)*Xt(fromframe2+1,id);
-                Yt(fromframe2-1,id)=sw(1)*Yt(fromframe2-3,id)+sw(2)*Yt(fromframe2-2,id)+sw(3)*Yt(fromframe2,id)+sw(4)*Yt(fromframe2+1,id);
-                
+%                 Xt(toframe1+1,id)=sw(1)*Xt(toframe1-1,id)+sw(2)*Xt(toframe1,id)+sw(3)*Xt(toframe1+2,id)+sw(4)*Xt(toframe1+3,id);
+%                 Yt(toframe1+1,id)=sw(1)*Yt(toframe1-1,id)+sw(2)*Yt(toframe1,id)+sw(3)*Yt(toframe1+2,id)+sw(4)*Yt(toframe1+3,id);
+%                 Xt(fromframe2-1,id)=sw(1)*Xt(fromframe2-3,id)+sw(2)*Xt(fromframe2-2,id)+sw(3)*Xt(fromframe2,id)+sw(4)*Xt(fromframe2+1,id);
+%                 Yt(fromframe2-1,id)=sw(1)*Yt(fromframe2-3,id)+sw(2)*Yt(fromframe2-2,id)+sw(3)*Yt(fromframe2,id)+sw(4)*Yt(fromframe2+1,id);
+%                 
  
 
 %                 Yt(toframe1+1,id)=0.5*(Yt(toframe1,id)+Yt(toframe1+2,id));

@@ -30,3 +30,7 @@ if bu==1
     Ygt(t,id)=yc;
 end
 end
+% save('r1-medium_gt-raw.mat','Xgt','Ygt');
+% [Xgt, Ygt]=interpGT(Xgt,Ygt);
+% save('r1-medium_gt.mat','Xgt','Ygt');
+% saveToCVML(Xgt,Ygt,'data/r1-medium_gt.xml',1,25);
