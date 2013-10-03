@@ -23,7 +23,7 @@ while button~=3
     id=id+1;
     % tracks
 %     while button~=3
-    randnum=randi(15)+5
+    randnum=randi(5)+5
         [x, y, button]=ginput(randnum);
 %     end
     nPts=length(x);
@@ -54,7 +54,7 @@ frameRate=2;
 Xipol=[]; Yipol=[];
 for id=1:N
     exfr=find(X(:,id)); % find existing frames
-    speed=500+randn*50;
+    speed=750+randn*50;
     tSteps=ceil(frameRate*(lengths(id)/speed)); % how many time steps
     tr=1:tSteps;
     % snap to start or end of sequence
@@ -89,7 +89,7 @@ for t=1:F
 end
 size(readings)
 
-seq_data_file='s1-hard';
+seq_data_file='testanton';
 data_output_file=sprintf('d:/prml/irtracking/data/%s.txt',seq_data_file);
 
 % date
@@ -111,7 +111,7 @@ saveToCVML(X,Y,sprintf('d:/prml/irtracking/data/%s.xml',seq_data_file),0,25);
 gtFile=sprintf('d:/prml/irtracking/data/%s_gt.xml',seq_data_file);
 saveToCVML(Xipol,Yipol, gtFile,1,25);
 
-sceneInfo=getSceneInfo(303);
+sceneInfo=getSceneInfo(399);
 
 [pathtogt, gtfile, fileext]=fileparts(gtFile);
 gtInfo=parseGT(sceneInfo.gtFile);

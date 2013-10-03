@@ -1,17 +1,27 @@
 %%
 allscen=[301:303 311:313];
 readfiles={'s1-easy.txt','s1-medium.txt','s1-hard.txt','r1-easy.txt','r1-medium.txt','r1-hard.txt'};
-scenario=301;
+scenario=312;
+nf=25;
 [xc, yc]=getSensorCoordinates;
+yoffset=560;
 
-    
-for scenario=allscen
+xc=xc/nf; yc=yc/nf;
+if nf>1, yc=yoffset-yc; end
+
+
+%     allscen=313;
+for scenario=313
     scnt=find(allscen==scenario);
     [readings, ts]=readData(['data/' char(readfiles{scnt}) ]);
 
     stateInfo=infos(scenario,1).stateInfo; sceneInfo=getSceneInfo(scenario);
     
-    for t=1:length(sceneInfo.frameNums)
+    renderframes=1:length(sceneInfo.frameNums);
+    renderframes=15;
+    renderframes=43;
+    renderframes=25;
+    for t=renderframes
 %     for t=15
         
 %         t=35;
@@ -25,22 +35,47 @@ for scenario=allscen
         set(gca,'XTick',[]);set(gca,'YTick',[]);
         
         
-        im=imread(sprintf('d:/prml/irtracking/data/img/frame_%05d.jpg',t));
-        xIm=[0 8000]; xIm=repmat(xIm,2,1);
-        yIm=[14000 0]; yIm=repmat(yIm,2,1);yIm=yIm';
-        zIm=zeros(2,2);
-        surf(xIm,yIm,zIm,'CData',im,'FaceColor','texturemap');
-        xlim([0 8000]);
-        ylim([0 14000]);
+        im=imread('d:/prml/irtracking/data/layout.png');
+        im=imresize(im,[560 345]);
+%         xIm=[0 8000]; xIm=repmat(xIm,2,1);
+%         yIm=[14000 0]; yIm=repmat(yIm,2,1);yIm=yIm';
+%         zIm=zeros(2,2);
+%         surf(xIm,yIm,zIm,'CData',im,'FaceColor','texturemap');
+        imshow(im,'Border','tight');
+        hold on;
+%         xlim([0 8000]);
+%         ylim([0 14000]);
+        if nf>1, xlim([1 345]); ylim([1 560]); end
         
-        plotSensorCoordinates;
+%         plotSensorCoordinates;
+        plot(xc,yc,'k.');
+
+        % active sensors
+        active=find(readings(t,:));
+%         plot(xc(active),yc(active),'o');
+        r=750/nf;
+        rads=linspace(0,2*pi,100);
+        allpx=r*cos(rads);
+        allpy=r*sin(rads);
+        for as=active
+            rectangle('Position',[xc(as)-r,yc(as)-r,2*r,2*r],'Curvature',[1,1],'FaceColor',[1 .9 .9]);
+            plot(xc(as),yc(as),'.r','MarkerSize',20);
+            px=allpx+xc(as);py=allpy+yc(as);
+%             patch(px,py,ones(1,length(px)),'r','FaceAlpha',0.1);
+        end
         
-        X=gtInfo.Xgp; Y=gtInfo.Ygp;
+%         for s=1:43
+            
+%         end
+
+
+        X=gtInfo.Xgp/nf; Y=gtInfo.Ygp/nf;
+        if nf>1, Y=yoffset-Y; end
         [F, N]=size(X);
         extar=find(X(t,:));
         
         for id=extar            
-            plot3(X(t,id),Y(t,id),1,'o','color',getColorFromID(id));
+            plot(X(t,id),Y(t,id),'o','color',getColorFromID(id));
         end
         
         %trace
@@ -69,15 +104,17 @@ for scenario=allscen
 %         subplot(1,2,2); cla; hold on;
 %         set(gca,'XTick',[]);set(gca,'YTick',[]);
         
-        im=imread(sprintf('d:/prml/irtracking/data/img/frame_%05d.jpg',t));
-        xIm=[0 8000]; xIm=repmat(xIm,2,1);
-        yIm=[14000 0]; yIm=repmat(yIm,2,1);yIm=yIm';
-        zIm=zeros(2,2);
-        surf(xIm,yIm,zIm,'CData',im,'FaceColor','texturemap');
+%         im=imread(sprintf('d:/prml/irtracking/data/img/frame_%05d.jpg',t));
+%         xIm=[0 8000]; xIm=repmat(xIm,2,1);
+%         yIm=[14000 0]; yIm=repmat(yIm,2,1);yIm=yIm';
+%         zIm=zeros(2,2);
+%         surf(xIm,yIm,zIm,'CData',im,'FaceColor','texturemap');
         
-        plotSensorCoordinates;
+%         plotSensorCoordinates;
         
-        X=stateInfo.Xgp; Y=stateInfo.Ygp;
+        X=stateInfo.Xgp/nf; Y=stateInfo.Ygp/nf;
+        if nf>1, Y=yoffset-Y; end
+        
         [F, N]=size(X);
         
         
@@ -104,7 +141,7 @@ for scenario=allscen
         
         for id=1:N
             if X(t,id)
-                plot3(X(t,id),Y(t,id),1,'o','color',newColors(id,:));
+                plot(X(t,id),Y(t,id),'o','color',newColors(id,:));
             end
         end
         
@@ -127,27 +164,15 @@ for scenario=allscen
         end
         
         
-        % active sensors
-        active=find(readings(t,:));
-%         plot(xc(active),yc(active),'o');
-        r=750;
-        rads=linspace(0,2*pi,100);
-        allpx=r*cos(rads);
-        allpy=r*sin(rads);
-        for as=active
-%             rectangle('Position',[xc(as)-r,yc(as)-r,2*r,2*r],'Curvature',[1,1],'FaceColor',[1 0 0],'Transparency',0.5);
-            px=allpx+xc(as);py=allpy+yc(as);
-            patch(px,py,ones(1,length(px)),'r','FaceAlpha',0.1);
-        end
-        
-%         for s=1:43
-            plot3(xc,yc,ones(1,43),'k.');
-%         end
+
 
         % save output
-        outfile=sprintf('vis/s%04d/f_%04d.jpg',scenario,t);
-%         saveas(gcf,outfile);
-        im2cap=getframe(gcf);        im2cap=im2cap.cdata;        imwrite(im2cap,outfile);
+        outfile=sprintf('vis/s%04d/f_%04d.pdf',scenario,t);  
+        removeFigureBorders;
+%         outfile=sprintf('vis/s%04d/f_%04d.jpg',scenario,t);        
+        saveas(gcf,outfile);
+%         print(gcf,'-dpdf','-q101','-r1200',outfile);
+%         im2cap=getframe(gcf);        im2cap=im2cap.cdata;        imwrite(im2cap,outfile);
         
     end
 end

@@ -28,6 +28,7 @@ end
 wc = WebCamera.new('133.87.136.179',80,'webcam','panasonic')
 loop do
  t = Time.now
- filename = t.strftime("data/webcams/c2/%Y%m%d-%H%M%S.jpg")
+ # filename = t.strftime("data/webcams/c2/%Y%m%d-%H%M%S.jpg")
+ filename = t.strftime("data/webcams/c2/%Y%m%d-%H%M%S-%1N.jpg")
  File.open(filename, "w").binmode.write(wc.fetch)
 end

@@ -728,7 +728,7 @@ switch(scenario)
     case 313
         sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','r1-hard_gt.mat');
     case 399
-        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','testanton-long_gt.xml');        
+        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','testanton_gt.xml');        
     otherwise
         warning('ground truth?');
 end
