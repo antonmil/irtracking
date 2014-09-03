@@ -10,9 +10,10 @@
     
 global detections gtInfo scenario stateInfo
 
-rnmeansstart=[5 5 .1 .2 18];
-rnmeansstart=[5 .01 2 4 2 .25]; % PRML
+rnmeansstart=[5 5 .1 .1 18];
+% rnmeansstart=[5 .01 2 4 2 .25]; % PRML
 % rnmeansstart=[0.1 0.001 0.01]; 
+
 
 
 allscen=[42 23 25 27 71 72];
@@ -21,8 +22,8 @@ allscen=[301:303 311:313];
 rnmeans=rnmeansstart;
 % allscen=[71 42 ];
 
-addpath('D:/visinf/projects/ongoing/contracking');
-addpath(genpath('D:/visinf/projects/ongoing/contracking/utils'));
+% addpath('D:/visinf/projects/ongoing/contracking');
+% addpath(genpath('D:/visinf/projects/ongoing/contracking/utils'));
 
 clear alla allb allcemopts infos
 itcnt=0;
@@ -31,13 +32,8 @@ while 1
     
     % rnmeans=[4.8669 7.43825 0.137917 0.0267995 0.0797967];
     
-    opt=getConOptions;
-    opt.wtEdet=rnmeans(1);               % should be kept at 1
-    opt.wtEdyn=rnmeans(2);
-    opt.wtEexc=rnmeans(3);
-    opt.wtEper=rnmeans(4);
-    opt.wtEreg=rnmeans(5);
-    opt.lambda=rnmeans(6);
+    popt=getPirOptions(popt);
+
     
     maxexpruns=20;
     
@@ -58,21 +54,21 @@ while 1
         if exprun==0
             randopts=rnmeans;
         end
-    opt.wtEdet=randopts(1);               % should be kept at 1
-    opt.wtEdyn=randopts(2);
-    opt.wtEexc=randopts(3);
-    opt.wtEper=randopts(4);
-    opt.wtEreg=randopts(5);
-    opt.lambda=randopts(6);
-        opt.track3d=1;
         
+popt.c_en      = randopts(1);     %% birth cost
+popt.c_ex      = randopts(2);     %% death cost
+popt.c_ij      = randopts(3);      %% transition cost
+popt.betta     = randopts(4);    %% betta
+popt.max_it    = Inf;    %% max number of iterations (max number of tracks)
+popt.thr_cost  = randopts(5);     %% max acceptable cost for a track (increase it to have more tracks.)
         
         for scen=allscen
             scenario=scen
             randopts
 %             [metrics2d metrics3d stateInfo] = swDCTrackerMHT( scenario, opt );
 %             [metrics2d metrics3d stateInfo] = run_mytracker( scenario, opt );
-            [metrics2d, metrics3d, allens, stateInfo]=swCEMTracker(scenario,opt);
+%             [metrics2d, metrics3d, allens, stateInfo]=swCEMTracker(scenario,opt);
+            [metrics2d, metrics3d, allens, stateInfo]=runDP(scenario,popt,myopt);
             mets2d(scen,:,exprun+1)=metrics2d;
             mets3d(scen,:,exprun+1)=metrics3d;
             infos(scen,exprun+1).stateInfo=stateInfo;
@@ -94,12 +90,13 @@ while 1
         fprintf('done!\n');
         break
     end
-        opt.wtEdet=randopts(1);               % should be kept at 1
-    opt.wtEdyn=randopts(2);
-    opt.wtEexc=randopts(3);
-    opt.wtEper=randopts(4);
-    opt.wtEreg=randopts(5);
-    opt.lambda=randopts(6);
+popt.c_en      = randopts(1);     %% birth cost
+popt.c_ex      = randopts(2);     %% death cost
+popt.c_ij      = randopts(3);      %% transition cost
+popt.betta     = randopts(4);    %% betta
+popt.max_it    = Inf;    %% max number of iterations (max number of tracks)
+popt.thr_cost  = randopts(5);     %% max acceptable cost for a track (increase it to have more tracks.)
+    
     rvec=(sprintf('%.15f ', ...
         allcemopts(bestexp).wtEdet,allcemopts(bestexp).wtEdyn,allcemopts(bestexp).wtEexc, ...
         allcemopts(bestexp).wtEper,allcemopts(bestexp).wtEreg,allcemopts(bestexp).lambda));

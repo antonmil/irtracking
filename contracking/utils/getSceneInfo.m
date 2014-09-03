@@ -288,10 +288,13 @@ switch(scenario)
     case {195,196,197,198,199}
         sceneInfo.frameNums=1:750;
     case {301}
-        sceneInfo.frameNums=1:167;
-        sceneInfo.frameNums=1:23;
+%         sceneInfo.frameNums=1:167;
+%         sceneInfo.frameNums=1:23;
+        sceneInfo.frameNums=1:108;
     case 302
-        sceneInfo.frameNums=1:72;
+        sceneInfo.frameNums=1:110;
+    case 303
+        sceneInfo.frameNums=1:206;
     case 311
         sceneInfo.frameNums=1:230;
     case 312
@@ -424,19 +427,19 @@ switch(scenario)
     case 199
         sceneInfo.detfile=fullfile(dbfolder,dataset,seqname,'Detection_PNNL_ParkingLot.xml');
     case 301
-        sceneInfo.detfile=fullfile(homefolder,'prml','irtracking','data','s1-easy.xml');
+        sceneInfo.detfile=fullfile(homefolder,'research','projects','irtracking','data','s1-easy.xml');
     case 302
-        sceneInfo.detfile=fullfile(homefolder,'prml','irtracking','data','s1-medium.xml');
+        sceneInfo.detfile=fullfile(homefolder,'research','projects','irtracking','data','s1-medium.xml');
     case 303
-        sceneInfo.detfile=fullfile(homefolder,'prml','irtracking','data','s1-hard.xml');
+        sceneInfo.detfile=fullfile(homefolder,'research','projects','irtracking','data','s1-hard.xml');
     case 311
-        sceneInfo.detfile=fullfile(homefolder,'prml','irtracking','data','r1-easy.xml');
+        sceneInfo.detfile=fullfile(homefolder,'research','projects','irtracking','data','r1-easy.xml');
     case 312
-        sceneInfo.detfile=fullfile(homefolder,'prml','irtracking','data','r1-medium.xml');
+        sceneInfo.detfile=fullfile(homefolder,'research','projects','irtracking','data','r1-medium.xml');
     case 313
-        sceneInfo.detfile=fullfile(homefolder,'prml','irtracking','data','r1-hard.xml');
+        sceneInfo.detfile=fullfile(homefolder,'research','projects','irtracking','data','r1-hard.xml');
     case 399
-        sceneInfo.detfile=fullfile(homefolder,'prml','irtracking','data','testanton.xml');
+        sceneInfo.detfile=fullfile(homefolder,'research','projects','irtracking','data','testanton.xml');
     otherwise
         sceneInfo.detfile=fullfile(detfolder,[seqname sprintf('-result-00000-%05d-nms.idl',length(sceneInfo.frameNums)-1)]);             
 end
@@ -514,7 +517,7 @@ switch(scenario)
     case {195,196,197,198,199}
         sceneInfo.imgFolder=fullfile(dbfolder,dataset,seqname,filesep,'allframes',filesep);
     case intersect(scenario,301:399)
-        sceneInfo.imgFolder=fullfile(homefolder,'prml','irtracking','data','img',filesep);
+        sceneInfo.imgFolder=fullfile(homefolder,'research','projects','irtracking','data','img',filesep);
     otherwise
         error('unknown scenario image Folder');
 end
@@ -639,7 +642,7 @@ if opt.track3d
         case intersect(scenario,160:163) %%% !!! FIX !!!
             cameraconffile=sprintf('%sCAVIAR/CAVIAR-front.xml',dbfolder);
         case intersect(scenario,301:399)
-            cameraconffile=fullfile(homefolder,'prml','irtracking','data','cam.xml');    
+            cameraconffile=fullfile(homefolder,'research','projects','irtracking','data','cam.xml');    
         otherwise
             error('unknown scenario');
     end
@@ -716,19 +719,19 @@ switch(scenario)
 %         sceneInfo.gtFile=fullfile(dbfolder,dataset,seqname,'GT_PNNL_ParkingLot_1-750.mat');
 %         sceneInfo.gtFile=fullfile(dbfolder,dataset,seqname,'GT_PNNL_ParkingLot.mat');
     case 301
-        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','s1-easy_gt.xml');        
+        sceneInfo.gtFile=fullfile(homefolder,'research','projects','irtracking','data','s1-easy_gt.xml');        
     case 302
-        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','s1-medium_gt.xml');
+        sceneInfo.gtFile=fullfile(homefolder,'research','projects','irtracking','data','s1-medium_gt.xml');
     case 303
-        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','s1-hard_gt.xml');
+        sceneInfo.gtFile=fullfile(homefolder,'research','projects','irtracking','data','s1-hard_gt.xml');
     case 311
-        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','r1-easy_gt.mat');        
+        sceneInfo.gtFile=fullfile(homefolder,'research','projects','irtracking','data','r1-easy_gt.mat');        
     case 312
-        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','r1-medium_gt.mat');
+        sceneInfo.gtFile=fullfile(homefolder,'research','projects','irtracking','data','r1-medium_gt.mat');
     case 313
-        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','r1-hard_gt.mat');
+        sceneInfo.gtFile=fullfile(homefolder,'research','projects','irtracking','data','r1-hard_gt.mat');
     case 399
-        sceneInfo.gtFile=fullfile(homefolder,'prml','irtracking','data','testanton_gt.xml');        
+        sceneInfo.gtFile=fullfile(homefolder,'research','projects','irtracking','data','testanton_gt.xml');        
     otherwise
         warning('ground truth?');
 end

@@ -9,18 +9,19 @@ yoffset=560;
 xc=xc/nf; yc=yc/nf;
 if nf>1, yc=yoffset-yc; end
 
-
-%     allscen=313;
-for scenario=313
+global gtInfo
+%     allscen=312;
+for scenario=allscen
+    if scenario~=312, continue; end
     scnt=find(allscen==scenario);
     [readings, ts]=readData(['data/' char(readfiles{scnt}) ]);
 
-    stateInfo=infos(scenario,1).stateInfo; sceneInfo=getSceneInfo(scenario);
+    stateInfo=infos(scenario).stateInfo; sceneInfo=getSceneInfo(scenario);
     
     renderframes=1:length(sceneInfo.frameNums);
-    renderframes=15;
-    renderframes=43;
-    renderframes=25;
+%     renderframes=15;
+%     renderframes=43;
+%     renderframes=25;
     for t=renderframes
 %     for t=15
         
@@ -35,7 +36,7 @@ for scenario=313
         set(gca,'XTick',[]);set(gca,'YTick',[]);
         
         
-        im=imread('d:/prml/irtracking/data/layout.png');
+        im=imread('/home/amilan/research/projects/irtracking/data/layout.png');
         im=imresize(im,[560 345]);
 %         xIm=[0 8000]; xIm=repmat(xIm,2,1);
 %         yIm=[14000 0]; yIm=repmat(yIm,2,1);yIm=yIm';
@@ -69,14 +70,14 @@ for scenario=313
 %         end
 
 
-        X=gtInfo.Xgp/nf; Y=gtInfo.Ygp/nf;
-        if nf>1, Y=yoffset-Y; end
-        [F, N]=size(X);
-        extar=find(X(t,:));
-        
-        for id=extar            
-            plot(X(t,id),Y(t,id),'o','color',getColorFromID(id));
-        end
+%         X=gtInfo.Xgp/nf; Y=gtInfo.Ygp/nf;
+%         if nf>1, Y=yoffset-Y; end
+%         [F, N]=size(X);
+%         extar=find(X(t,:));
+%         
+%         for id=extar            
+%             plot(X(t,id),Y(t,id),'o','color',getColorFromID(id));
+%         end
         
         %trace
         for tracet=max(1,t-options.traceLength):max(1,t-1)
@@ -118,24 +119,30 @@ for scenario=313
         [F, N]=size(X);
         
         
-        [metr,metrInfo,addInf]=CLEAR_MOT(gtInfo,stateInfo,struct('eval3d',1));
-        newColors=[];
+%         [metr,metrInfo,addInf]=CLEAR_MOT(gtInfo,stateInfo,struct('eval3d',1));
+%         newColors=[];
+%         for id=1:N
+%             % which gt tracks are covered by id
+%             [u, v]=find(addInf.alltracked==id);
+%             uniquev = unique(v');
+%             
+%             % which one is the dominant one?
+%             maxfr=0;
+%             domid=id;
+%             for id2=uniquev
+%                 if numel(find(v==id2)') > maxfr
+%                     domid=id2;
+%                 end
+%             end
+%             newColors(id,:)=getColorFromID(domid);
+%             
+%         end
+                newColors=[];
         for id=1:N
-            % which gt tracks are covered by id
-            [u, v]=find(addInf.alltracked==id);
-            uniquev = unique(v');
-            
-            % which one is the dominant one?
-            maxfr=0;
-            domid=id;
-            for id2=uniquev
-                if numel(find(v==id2)') > maxfr
-                    domid=id2;
-                end
-            end
-            newColors(id,:)=getColorFromID(domid);
-            
+            newColors(id,:)=getColorFromID(id);           
         end
+
+        
         
         
         
@@ -169,10 +176,13 @@ for scenario=313
         % save output
         outfile=sprintf('vis/s%04d/f_%04d.pdf',scenario,t);  
         removeFigureBorders;
-%         outfile=sprintf('vis/s%04d/f_%04d.jpg',scenario,t);        
-        saveas(gcf,outfile);
+        outfile=sprintf('vis/s%04d/f_%04d.png',scenario,t);        
+%         saveas(gcf,outfile);
 %         print(gcf,'-dpdf','-q101','-r1200',outfile);
-%         im2cap=getframe(gcf);        im2cap=im2cap.cdata;        imwrite(im2cap,outfile);
+        im2cap=getframe(gcf);        im2cap=im2cap.cdata;        
+        im2cap=imrotate(im2cap,-90);
+        im2cap=imresize(im2cap,[340,560]);
+        imwrite(im2cap,outfile);
         
     end
 end

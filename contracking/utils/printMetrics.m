@@ -1,12 +1,31 @@
 function printMetrics(metrics, metricsInfo, dispHeader,dispMetrics,padChar)
+% print metrics
 % 
-% (C) Anton Andriyenko, 2012
+% ...
 %
-% The code may be used free of charge for non-commercial and
-% educational purposes, the only requirement is that this text is
-% preserved within the derivative work. For any other purpose you
-% must contact the authors for permission. This code may not be
-% redistributed without written permission from the authors.
+
+% default names
+if nargin==1
+    metricsInfo.names.long = {'Recall','Precision','False Alarm Rate', ...
+        'GT Tracks','Mostly Tracked','Partially Tracked','Mostly Lost', ...
+        'False Positives', 'False Negatives', 'ID Switches', 'Fragmentations', ...
+        'MOTA','MOTP', 'MOTA Log'};
+
+    metricsInfo.names.short = {'Rcll','Prcn','FAR', ...
+        'GT','MT','PT','ML', ...
+        'FP', 'FN', 'IDs', 'FM', ...
+        'MOTA','MOTP', 'MOTAL'};
+
+    metricsInfo.widths.long = [6 9 16 9 14 17 11 15 15 11 14 5 5 8];
+    metricsInfo.widths.short = [5 5 5 3 3 3 3 4 4 3 3 5 5 5];
+
+    metricsInfo.format.long = {'.1f','.1f','.2f', ...
+        'i','i','i','i', ...
+        'i','i','i','i', ...
+        '.1f','.1f','.1f'};
+
+    metricsInfo.format.short=metricsInfo.format.long;    
+end
 
 namesToDisplay=metricsInfo.names.long;
 widthsToDisplay=metricsInfo.widths.long;

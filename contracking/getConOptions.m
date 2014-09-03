@@ -121,6 +121,14 @@ if opt.track3d
     opt.wtEper=4;
     opt.wtEreg=2;
     opt.lambda=0.25;
+    
+    opt.wtEdet=1;
+    opt.wtEdyn=.2/3;
+    opt.wtEexc=2/3;
+    opt.wtEper=1/3;
+    opt.wtEreg=1;
+    
+    
 %     opt.frames=100:150;
 end
 

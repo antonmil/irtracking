@@ -8,7 +8,7 @@ function homedir=getHomeFolder()
 % must contact the authors for permission. This code may not be
 % redistributed without written permission from the authors.
 
-    homedir='/home/aanton';
+    homedir='/home/amilan';
     if ispc
         homedir='D:';
     end
