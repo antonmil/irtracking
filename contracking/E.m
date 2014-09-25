@@ -194,7 +194,7 @@ EperValue = 0; dEper=zeros(length(stateVec),1);
 
 if opt.wtEper>0
     if opt.mex
-        [EperValue dEper]=Eper_mex(X,Y,areaLimits,targetSize,targetsExist,length(stateVec));
+        [EperValue dEper]=Eper_mex(X,Y,areaLimits,350,targetsExist,length(stateVec));
     else
         if nargout>1, [EperValue dEper]=Eper(stateVec,stateInfo);
         else EperValue=Eper(stateVec, stateInfo);

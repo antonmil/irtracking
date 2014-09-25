@@ -11,13 +11,14 @@
 global detections gtInfo scenario stateInfo
 
 rnmeansstart=[5 5 .1 .1 18];
-% rnmeansstart=[5 .01 2 4 2 .25]; % PRML
-% rnmeansstart=[0.1 0.001 0.01]; 
+rnmeansstart=[5 .01 2 4 2 .02]; % PRML
+rnmeansstart=[1.0000    0.0006    0.7488    0.0614    0.0185    0.0036]; 
 
 
 
 allscen=[42 23 25 27 71 72];
 allscen=[301:303 311:313];
+scenario=allscen(1);
 
 rnmeans=rnmeansstart;
 % allscen=[71 42 ];
@@ -26,13 +27,15 @@ rnmeans=rnmeansstart;
 % addpath(genpath('D:/visinf/projects/ongoing/contracking/utils'));
 
 clear alla allb allcemopts infos
+% matlabpool(6);
 itcnt=0;
 while 1
     itcnt=itcnt+1;
     
     % rnmeans=[4.8669 7.43825 0.137917 0.0267995 0.0797967];
     
-    popt=getPirOptions(popt);
+%     popt=getPirOptions(popt);
+    opt=getConOptions;
 
     
     maxexpruns=20;
@@ -55,24 +58,43 @@ while 1
             randopts=rnmeans;
         end
         
-popt.c_en      = randopts(1);     %% birth cost
-popt.c_ex      = randopts(2);     %% death cost
-popt.c_ij      = randopts(3);      %% transition cost
-popt.betta     = randopts(4);    %% betta
-popt.max_it    = Inf;    %% max number of iterations (max number of tracks)
-popt.thr_cost  = randopts(5);     %% max acceptable cost for a track (increase it to have more tracks.)
+% popt.c_en      = randopts(1);     %% birth cost
+% popt.c_ex      = randopts(2);     %% death cost
+% popt.c_ij      = randopts(3);      %% transition cost
+% popt.betta     = randopts(4);    %% betta
+% popt.max_it    = Inf;    %% max number of iterations (max number of tracks)
+% popt.thr_cost  = randopts(5);     %% max acceptable cost for a track (increase it to have more tracks.)
+opt.wtEdet = randopts(1);     %% birth cost
+opt.wtEdyn      = randopts(2);     %% death cost
+opt.wtEexc      = randopts(3);      %% transition cost
+opt.wtEper     = randopts(4);    %% betta
+opt.wtEreg    = randopts(5);    %% max number of iterations (max number of tracks)
+opt.lambda  = randopts(6);     %% max acceptable cost for a track (increase it to have more tracks.)
+
+%         
         
-        for scen=allscen
+        pfm2d=[];pfm3d=[];pfinf=[];
+        parfor scencnt=1:length(allscen)
+            scen=allscen(scencnt);
             scenario=scen
             randopts
 %             [metrics2d metrics3d stateInfo] = swDCTrackerMHT( scenario, opt );
 %             [metrics2d metrics3d stateInfo] = run_mytracker( scenario, opt );
 %             [metrics2d, metrics3d, allens, stateInfo]=swCEMTracker(scenario,opt);
-            [metrics2d, metrics3d, allens, stateInfo]=runDP(scenario,popt,myopt);
-            mets2d(scen,:,exprun+1)=metrics2d;
-            mets3d(scen,:,exprun+1)=metrics3d;
-            infos(scen,exprun+1).stateInfo=stateInfo;
+%             [metrics2d, metrics3d, allens, stateInfo]=runDP(scenario,popt,myopt);
+               [metrics2d, metrics3d, allens, stateInfo]=cemTracker(scenario,opt);
+                pfm2d(scencnt,:)=metrics2d;
+                pfm2d(scencnt,:)=metrics3d;
+                pfinf(scencnt).stateInfo=stateInfo;
         end
+                
+        for scencnt=1:length(allscen)
+            scen=allscen(scencnt);
+            mets2d(scen,:,exprun+1)=pfm2d(scencnt,:);
+            mets3d(scen,:,exprun+1)=pfm3d(scencnt,:);
+            infos(scen,exprun+1).stateInfo=pfinf(scencnt).stateInfo;
+        end
+        
         %     allm3d(exprun+1,:)=metrics3d;
         allm3d(exprun+1,:)=mean(mets3d(allscen,:,exprun+1),1);
         allcemopts(exprun+1)=opt;
@@ -90,13 +112,13 @@ popt.thr_cost  = randopts(5);     %% max acceptable cost for a track (increase i
         fprintf('done!\n');
         break
     end
-popt.c_en      = randopts(1);     %% birth cost
-popt.c_ex      = randopts(2);     %% death cost
-popt.c_ij      = randopts(3);      %% transition cost
-popt.betta     = randopts(4);    %% betta
-popt.max_it    = Inf;    %% max number of iterations (max number of tracks)
-popt.thr_cost  = randopts(5);     %% max acceptable cost for a track (increase it to have more tracks.)
-    
+% popt.c_en      = randopts(1);     %% birth cost
+% popt.c_ex      = randopts(2);     %% death cost
+% popt.c_ij      = randopts(3);      %% transition cost
+% popt.betta     = randopts(4);    %% betta
+% popt.max_it    = Inf;    %% max number of iterations (max number of tracks)
+% popt.thr_cost  = randopts(5);     %% max acceptable cost for a track (increase it to have more tracks.)
+%     
     rvec=(sprintf('%.15f ', ...
         allcemopts(bestexp).wtEdet,allcemopts(bestexp).wtEdyn,allcemopts(bestexp).wtEexc, ...
         allcemopts(bestexp).wtEper,allcemopts(bestexp).wtEreg,allcemopts(bestexp).lambda));
@@ -104,4 +126,4 @@ popt.thr_cost  = randopts(5);     %% max acceptable cost for a track (increase i
     eval(evalstr)
     pause(1)
 end
-
+delete(gcp);
