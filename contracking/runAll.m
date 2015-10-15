@@ -1,17 +1,19 @@
 %%
+addpath(genpath('..'))
 opt=getConOptions;
-matlabpool(6);
+% parpool(6);
+allscen=[301:303 311:313];
 pfm2d=[];pfm3d=[];pfinf=[];
-parfor scencnt=1:length(allscen)
+for scencnt=1:length(allscen)
     scen=allscen(scencnt);
-    scenario=scen
+    scenario=scen;
     
     [metrics2d, metrics3d, allens, stateInfo]=cemTracker(scenario,opt);
     pfm2d(scencnt,:)=metrics2d;
     pfm3d(scencnt,:)=metrics3d;
     pfinf(scencnt).stateInfo=stateInfo;
 end
-delete(gcp)
+% delete(gcp)
 
 
 %%
